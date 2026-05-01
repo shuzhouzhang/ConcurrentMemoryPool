@@ -1,0 +1,35 @@
+# Visual Studio user files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+out/
+
+# C/C++ compiled files
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.dll
+*.lib
+*.exp
+*.idb
+*.ipdb
+*.iobj
+*.recipe
+*.log
+*.tlog
+*.lastbuildstate
+*.enc
+
+# Visual Studio generated project cache folder in this solution
+Concurre.96236198/
