@@ -2,6 +2,8 @@
 #include <cstddef> // 包含size_t
 #include<assert.h>
 #include<algorithm>
+#include<cstdlib>
+#include<new>
 
 #include<thread>
 #include<mutex>
@@ -27,10 +29,15 @@ typedef size_t PAGE_ID;
 
 inline static void* SystemAlloc(size_t kpage)
 {
+    size_t bytes = kpage << PAGE_SHIFT;
 #ifdef _WIN32
-    void* ptr = VirtualAlloc(0, kpage << 13, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    void* ptr = VirtualAlloc(0, bytes, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else
-    // linux下brk mmap等
+    void* ptr = nullptr;
+    if (posix_memalign(&ptr, size_t{ 1 } << PAGE_SHIFT, bytes) != 0)
+    {
+        ptr = nullptr;
+    }
 #endif
 
     if (ptr == nullptr)
@@ -154,6 +161,10 @@ public:
     }
   static inline size_t Roundup(size_t size)
     {
+        if (size == 0)
+        {
+            size = 1;
+        }
         if (size <= 128)
         {
             return   _Roundup(size, 8);
@@ -199,6 +210,10 @@ public:
 
  static inline size_t Index(size_t bytes)
  {
+     if (bytes == 0)
+     {
+         bytes = 1;
+     }
      assert(bytes <= 256 * 1024);
 
      static int group_array[4] = { 16, 56, 56, 56 };

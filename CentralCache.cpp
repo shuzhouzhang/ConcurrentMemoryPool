@@ -86,7 +86,9 @@ void CentralCache::ReleaseListToSpans(void* start, size_t size)
 		void* next = NextObj(start);
 
 		// 通过页号映射直接找到对象所属的span，不再遍历整个桶
+		PageCache::GetInstance()->_pageMtx.lock();
 		Span* span = PageCache::GetInstance()->MapObjectToSpan(start);
+		PageCache::GetInstance()->_pageMtx.unlock();
 
 		// 头插回span自己的自由链表，并同步减少已分配计数
 		NextObj(start) = span->_freeList;

@@ -13,6 +13,7 @@ x86/
 [Bb]in/
 [Oo]bj/
 out/
+build/
 
 # C/C++ compiled files
 *.obj

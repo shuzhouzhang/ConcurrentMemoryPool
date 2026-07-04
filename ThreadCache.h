@@ -4,8 +4,8 @@
 // 1. 前向声明ThreadCache，避免循环依赖
 class ThreadCache;
 
-// 2. 正确声明TLS变量：extern + __declspec(thread) + 完整类型
-extern __declspec(thread) ThreadCache* pTLSThreadCache;
+// 每个线程持有自己的 ThreadCache，减少小对象申请释放时的共享锁竞争。
+extern thread_local ThreadCache* pTLSThreadCache;
 
 class ThreadCache
 {

@@ -1,11 +1,11 @@
 ﻿#include"ThreadCache.h"
 #include"CentralCache.h"
-__declspec(thread) ThreadCache* pTLSThreadCache = nullptr;
+thread_local ThreadCache* pTLSThreadCache = nullptr;
 void* ThreadCache::Allocate(size_t size)
 {
 	assert(size <= MAX_BYTES);
 	size_t aligbsize = SizeClass::Roundup(size);
-	size_t index = SizeClass::Index(size);
+	size_t index = SizeClass::Index(aligbsize);
 	if (!_FreeLists[index].Empty())
 	{
 		return _FreeLists[index].Pop();
@@ -24,7 +24,7 @@ void ThreadCache::Deallocate(void* ptr, size_t size)
 	assert(size <= MAX_BYTES);
 
 	size_t alignSize = SizeClass::Roundup(size);
-	size_t index = SizeClass::Index(size);
+	size_t index = SizeClass::Index(alignSize);
 	// 先还给当前线程自己的freelist，尽量在本线程内完成释放
 	_FreeLists[index].Push(ptr);
 
